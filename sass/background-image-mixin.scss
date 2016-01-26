@@ -47,7 +47,7 @@
 	@include background-image("sprites/logo.png", false);
 
 */
-@mixin background-image($maps, $name: null, $adjust-size: true) {
+@mixin background-image($maps, $name: null, $no-adjust-size: false) {
 
 	$map: $maps;
 	@if type-of($maps) == 'map' {
@@ -80,7 +80,7 @@
 		$h: image-height($map);
 		background-size: $w $h;
 
-		@if $adjust-size {
+		@if $no-adjust-size != true {
 			width: $w;
 			height: $h;
 		}

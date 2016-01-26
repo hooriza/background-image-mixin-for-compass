@@ -26,8 +26,14 @@ $normals: (
 }
 
 .normal {
-	.responsive.image {
-		@include background-image($normals, hooriza);
+	.responsive {
+		.adjust-size.image {
+			@include background-image($normals, hooriza);
+		}
+
+		.not-adjust-size.image {
+			@include background-image($normals, hooriza, true);
+		}
 	}
 
 	.not-responsive {
@@ -37,8 +43,8 @@ $normals: (
 		}
 
 		.not-adjust-size.image {
-			@include background-image('../images/@2x/*.png', hooriza, false);
-			@include background-image('../images/@2x/hooriza.png', null, false); // or
+			@include background-image('../images/@2x/*.png', hooriza, true);
+			@include background-image('../images/@2x/hooriza.png', null, true); // or
 		}
 	}
 
