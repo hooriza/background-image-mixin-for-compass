@@ -1,0 +1,45 @@
+@import 'background-image-mixin';
+
+$sprites: (
+	1: sprite-map('../images/@1x/*.png'),
+	2: sprite-map('../images/@2x/*.png')
+);
+
+$normals: (
+	1: '../images/@1x/*.png',
+	2: '../images/@2x/*.png'
+);
+
+.image {
+	border:1px solid #aaa;
+	background-color:#ddd;
+}
+
+.sprite {
+	.responsive.image {
+		@include background-image($sprites, hooriza);
+	}
+
+	.not-responsive.image {
+		@include background-image(sprite-map('../images/@2x/*.png'), hooriza);
+	}
+}
+
+.normal {
+	.responsive.image {
+		@include background-image($normals, hooriza);
+	}
+
+	.not-responsive {
+		.adjust-size.image {
+			@include background-image('../images/@2x/*.png', hooriza);
+			@include background-image('../images/@2x/hooriza.png'); // or
+		}
+
+		.not-adjust-size.image {
+			@include background-image('../images/@2x/*.png', hooriza, false);
+			@include background-image('../images/@2x/hooriza.png', null, false); // or
+		}
+	}
+
+}

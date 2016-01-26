@@ -1,0 +1,16 @@
+{
+  "name": "background-image-mixin-for-compass",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hooriza/background-image-mixin-for-compass.git"
+  },
+  "author": "hooriza@gmail.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hooriza/background-image-mixin-for-compass/issues"
+  },
+  "homepage": "https://github.com/hooriza/background-image-mixin-for-compass#readme"
+}

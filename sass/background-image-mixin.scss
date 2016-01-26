@@ -1,0 +1,111 @@
+@charset "utf-8";
+
+/// https://css-tricks.com/snippets/sass/str-replace-function/
+/// Replace `$search` with `$replace` in `$string`
+/// @author Hugo Giraudel
+/// @param {String} $string - Initial string
+/// @param {String} $search - Substring to replace
+/// @param {String} $replace ('') - New value
+/// @return {String} - Updated string
+@function str-replace($string, $search, $replace: '') {
+	$index: str-index($string, $search);
+	@if $index {
+		@return str-slice($string, 1, $index - 1) + $replace + str-replace(str-slice($string, $index + str-length($search)), $search, $replace);
+	}
+	@return $string;
+}
+
+/*
+	// pixel-ratio 상관 안하고 sprite 이미지 지정
+	@include background-image(sprite-map("sprites/*.png"), name);
+
+	// pixel-ratio 에 따라서 서로다른 sprite 이미지 지정
+	@include background-image((
+		1: sprite-map("@1x/sprites/*.png"),
+		2: sprite-map("@2x/sprites/*.png")
+	), name);
+
+	// pixel-ratio 에 따라서 서로다른 일반 이미지 지정
+	@include background-image({
+		1: "@1x/sprites/*.png",
+		2: "@2x/sprites/*.png"
+	}, name)
+
+	// pixel-ratio 에 따라서 서로다른 일반 이미지 지정 (엘리먼트 크기 조정 안함)
+	@include background-image({
+		1: "@1x/sprites/*.png",
+		2: "@2x/sprites/*.png"
+	}, name, false)
+
+	// pixel-ratio 상관 안하고 sprite 이미지 지정
+	@include background-image(sprite-map("sprites/logo.png"));
+
+	// pixel-ratio 상관 안하고 일반 이미지 지정
+	@include background-image("sprites/logo.png");
+
+	// pixel-ratio 상관 안하고 일반 이미지 지정 (엘리먼트 크기 조정 안함)
+	@include background-image("sprites/logo.png", false);
+
+*/
+@mixin background-image($maps, $name: null, $adjust-size: true) {
+
+	$map: $maps;
+	@if type-of($maps) == 'map' {
+		$map: map-get($maps, 1); // 1배 이미지 정보 얻기
+	}
+
+	$is-sprite: type-of($map) == 'compass::sassextensions::sprites::spritemap';
+
+	@if $is-sprite {
+
+		background-image: sprite-url($map);
+
+		$w: sprite-width($map);
+		$h: sprite-height($map);
+		background-size: $w $h;
+
+		width: image-width(sprite-file($map, $name));
+		height: image-height(sprite-file($map, $name));
+
+		$x: nth(sprite-position($map, $name), 1);
+		$y: nth(sprite-position($map, $name), 2);
+		background-position: $x $y;
+
+	} @else {
+
+		$map: str-replace($map, '*', $name);
+		background-image: image-url($map);
+
+		$w: image-width($map);
+		$h: image-height($map);
+		background-size: $w $h;
+
+		@if $adjust-size {
+			width: $w;
+			height: $h;
+		}
+
+	}
+
+	@if type-of($maps) == 'map' {
+
+		$idx: 0;
+		@each $ratio, $map in $maps {
+			@if $idx > 0 {
+				$threshold_ratio: ($ratio + $last-ratio) / 2;
+				@media only screen and (min-device-pixel-ratio: #{$threshold_ratio}),
+							 only screen and (min-resolution: #{$threshold_ratio}dppx) {
+					@if $is-sprite {
+						background-image: sprite-url($map);
+					} @else {
+						background-image: image-url(str-replace($map, '*', $name));
+					}
+				}
+			}
+			$idx: $idx + 1;
+			$last-ratio: $ratio;
+		}
+
+	}
+
+}
